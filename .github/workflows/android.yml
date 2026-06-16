@@ -29,11 +29,14 @@ jobs:
       with:
         gradle-version: '8.4'
 
-    # Dito natin pinipilit na i-enable ang AndroidX para mawala ang mergeDependency error
-    - name: Inject AndroidX and Namespace Configurations
+    # Dito natin inayos ang AndroidX, Namespace, at nilinis ang sirang XML file
+    - name: Fix Configurations and Source Code XML
       run: |
         echo "android.useAndroidX=true" >> gradle.properties
         sed -i '/android {/a \    namespace "com.cdda.launcher"' app/build.gradle
+        
+        # Tatanggalin nito ang anumang ligaw na character pagkatapos ng </resources> sa styles_overlay.xml
+        sed -i '/<\/resources>/q' app/src/main/res/values/styles_overlay.xml
 
     - name: Build Debug APK
       run: gradle assembleDebug
