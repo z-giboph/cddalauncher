@@ -1,206 +1,203 @@
 package com.cddalauncher.overlay
 
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.graphics.PixelFormat
+import android.os.Build
 import android.os.IBinder
 import android.view.Gravity
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
-import android.view.inputmethod.InputMethodManager
-import android.widget.ImageButton
+import android.widget.Button
+import android.widget.Toast
 import com.cddalauncher.R
 
 class OverlayService : Service() {
 
     private lateinit var windowManager: WindowManager
     private lateinit var overlayView: View
-    private lateinit var dpadView: View
-    private lateinit var actionView: View
-    private lateinit var hotbarView: View
+    private var isOverlayVisible = true
 
-    // Track drag position for movable overlay toggle button
-    private var toggleX = 0f
-    private var toggleY = 0f
+    companion object {
+        private var instance: OverlayService? = null
+        
+        fun toggleOverlay() {
+            instance?.let {
+                it.isOverlayVisible = !it.isOverlayVisible
+                it.overlayView.visibility = if (it.isOverlayVisible) View.VISIBLE else View.GONE
+            }
+        }
+    }
 
     override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onCreate() {
         super.onCreate()
+        instance = this
         windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
-        setupOverlayViews()
+        createOverlayView()
     }
 
-    private fun setupOverlayViews() {
-        val inflater = LayoutInflater.from(this)
+    private fun createOverlayView() {
+        val inflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        overlayView = inflater.inflate(R.layout.overlay_controls, null)
 
-        // --- D-PAD (bottom left) ---
-        dpadView = inflater.inflate(R.layout.overlay_dpad, null)
-        val dpadParams = WindowManager.LayoutParams(
+        setupButtonListeners()
+
+        val params = WindowManager.LayoutParams(
             WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
-                    WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+            else
+                WindowManager.LayoutParams.TYPE_PHONE,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
             PixelFormat.TRANSLUCENT
-        ).apply {
-            gravity = Gravity.BOTTOM or Gravity.START
-            x = 24
-            y = 24
-        }
-        windowManager.addView(dpadView, dpadParams)
-        setupDpadListeners(dpadView)
-        makeDraggable(dpadView, dpadParams)
+        )
 
-        // --- ACTION PAD (bottom right) ---
-        actionView = inflater.inflate(R.layout.overlay_actions, null)
-        val actionParams = WindowManager.LayoutParams(
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
-                    WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
-            PixelFormat.TRANSLUCENT
-        ).apply {
-            gravity = Gravity.BOTTOM or Gravity.END
-            x = 24
-            y = 24
-        }
-        windowManager.addView(actionView, actionParams)
-        setupActionListeners(actionView)
-        makeDraggable(actionView, actionParams)
+        params.gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
+        params.y = 80
 
-        // --- HOTBAR (bottom center) ---
-        hotbarView = inflater.inflate(R.layout.overlay_hotbar, null)
-        val hotbarParams = WindowManager.LayoutParams(
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
-                    WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
-            PixelFormat.TRANSLUCENT
-        ).apply {
-            gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
-            y = 24
-        }
-        windowManager.addView(hotbarView, hotbarParams)
-        setupHotbarListeners(hotbarView)
+        windowManager.addView(overlayView, params)
+        startForegroundService()
     }
 
-    // ──────────────────────────────────────────
-    //  KEY SENDING
-    // ──────────────────────────────────────────
+    private fun setupButtonListeners() {
+        // D-PAD
+        overlayView.findViewById<Button>(R.id.overlay_btn_up).setOnClickListener {
+            sendKeyEvent(19)
+        }
+        overlayView.findViewById<Button>(R.id.overlay_btn_down).setOnClickListener {
+            sendKeyEvent(20)
+        }
+        overlayView.findViewById<Button>(R.id.overlay_btn_left).setOnClickListener {
+            sendKeyEvent(21)
+        }
+        overlayView.findViewById<Button>(R.id.overlay_btn_right).setOnClickListener {
+            sendKeyEvent(22)
+        }
 
-    private fun sendKey(keyCode: Int) {
-        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-        // Dispatches hardware key events to the focused CDDA window
-        val inst = android.app.Instrumentation()
-        Thread {
-            try {
-                inst.sendKeyDownUpSync(keyCode)
-            } catch (e: Exception) {
-                android.util.Log.w("Overlay", "Key send failed: ${e.message}")
-            }
-        }.start()
-    }
+        // Action Buttons
+        overlayView.findViewById<Button>(R.id.overlay_btn_enter).setOnClickListener {
+            sendKeyEvent(66)
+        }
+        overlayView.findViewById<Button>(R.id.overlay_btn_escape).setOnClickListener {
+            sendKeyEvent(111)
+        }
+        overlayView.findViewById<Button>(R.id.overlay_btn_space).setOnClickListener {
+            sendKeyEvent(62)
+        }
+        overlayView.findViewById<Button>(R.id.overlay_btn_comma).setOnClickListener {
+            sendKeyEvent(55)
+        }
+        overlayView.findViewById<Button>(R.id.overlay_btn_period).setOnClickListener {
+            sendKeyEvent(56)
+        }
 
-    private fun sendChar(c: Char) {
-        val inst = android.app.Instrumentation()
-        Thread {
-            try {
-                inst.sendCharacterSync(c.code)
-            } catch (e: Exception) {
-                android.util.Log.w("Overlay", "Char send failed: ${e.message}")
-            }
-        }.start()
-    }
+        // Hotbar
+        overlayView.findViewById<Button>(R.id.overlay_btn_i).setOnClickListener {
+            sendKeyEvent(25)
+        }
+        overlayView.findViewById<Button>(R.id.overlay_btn_m).setOnClickListener {
+            sendKeyEvent(51)
+        }
+        overlayView.findViewById<Button>(R.id.overlay_btn_s).setOnClickListener {
+            sendKeyEvent(47)
+        }
+        overlayView.findViewById<Button>(R.id.overlay_btn_f).setOnClickListener {
+            sendKeyEvent(41)
+        }
+        overlayView.findViewById<Button>(R.id.overlay_btn_c).setOnClickListener {
+            sendKeyEvent(54)
+        }
+        overlayView.findViewById<Button>(R.id.overlay_btn_e).setOnClickListener {
+            sendKeyEvent(44)
+        }
+        overlayView.findViewById<Button>(R.id.overlay_btn_g).setOnClickListener {
+            sendKeyEvent(38)
+        }
+        overlayView.findViewById<Button>(R.id.overlay_btn_d).setOnClickListener {
+            sendKeyEvent(42)
+        }
+        overlayView.findViewById<Button>(R.id.overlay_btn_a).setOnClickListener {
+            sendKeyEvent(29)
+        }
+        overlayView.findViewById<Button>(R.id.overlay_btn_w).setOnClickListener {
+            sendKeyEvent(50)
+        }
 
-    // ──────────────────────────────────────────
-    //  BUTTON WIRING
-    // ──────────────────────────────────────────
+        // Zoom
+        overlayView.findViewById<Button>(R.id.overlay_btn_zoom_in).setOnClickListener {
+            performZoom(true)
+        }
+        overlayView.findViewById<Button>(R.id.overlay_btn_zoom_out).setOnClickListener {
+            performZoom(false)
+        }
 
-    private fun setupDpadListeners(v: View) {
-        v.findViewById<View>(R.id.overlayBtnUp).setOnClickListener    { sendKey(android.view.KeyEvent.KEYCODE_DPAD_UP) }
-        v.findViewById<View>(R.id.overlayBtnDown).setOnClickListener  { sendKey(android.view.KeyEvent.KEYCODE_DPAD_DOWN) }
-        v.findViewById<View>(R.id.overlayBtnLeft).setOnClickListener  { sendKey(android.view.KeyEvent.KEYCODE_DPAD_LEFT) }
-        v.findViewById<View>(R.id.overlayBtnRight).setOnClickListener { sendKey(android.view.KeyEvent.KEYCODE_DPAD_RIGHT) }
-
-        // Long press UP = run north (shift+up in CDDA)
-        v.findViewById<View>(R.id.overlayBtnUp).setOnLongClickListener {
-            sendKey(android.view.KeyEvent.KEYCODE_DPAD_UP)
-            sendKey(android.view.KeyEvent.KEYCODE_DPAD_UP)
-            true
+        // Hide
+        overlayView.findViewById<Button>(R.id.overlay_btn_hide).setOnClickListener {
+            toggleOverlay()
+            Toast.makeText(this, "Overlay hidden!", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun setupActionListeners(v: View) {
-        v.findViewById<View>(R.id.overlayBtnConfirm).setOnClickListener   { sendKey(android.view.KeyEvent.KEYCODE_ENTER) }
-        v.findViewById<View>(R.id.overlayBtnCancel).setOnClickListener    { sendKey(android.view.KeyEvent.KEYCODE_ESCAPE) }
-        v.findViewById<View>(R.id.overlayBtnInventory).setOnClickListener { sendChar('i') }
-        v.findViewById<View>(R.id.overlayBtnPickup).setOnClickListener    { sendChar(',') }
-        v.findViewById<View>(R.id.overlayBtnDrop).setOnClickListener      { sendChar('d') }
-        v.findViewById<View>(R.id.overlayBtnWait).setOnClickListener      { sendChar('.') }
-    }
+    private fun sendKeyEvent(keyCode: Int) {
+        try {
+            val downTime = System.currentTimeMillis()
+            val downEvent = android.view.KeyEvent(
+                downTime, downTime,
+                android.view.KeyEvent.ACTION_DOWN,
+                keyCode, 0
+            )
+            val upEvent = android.view.KeyEvent(
+                downTime, downTime,
+                android.view.KeyEvent.ACTION_UP,
+                keyCode, 0
+            )
 
-    private fun setupHotbarListeners(v: View) {
-        v.findViewById<View>(R.id.overlayBtnCraft).setOnClickListener  { sendChar('&') }
-        v.findViewById<View>(R.id.overlayBtnMap).setOnClickListener    { sendChar('m') }
-        v.findViewById<View>(R.id.overlayBtnSmash).setOnClickListener  { sendChar('s') }
-        v.findViewById<View>(R.id.overlayBtnFire).setOnClickListener   { sendChar('f') }
-        v.findViewById<View>(R.id.overlayBtnClose).setOnClickListener  { stopSelf() }
-    }
-
-    // ──────────────────────────────────────────
-    //  DRAGGABLE OVERLAY PANELS
-    // ──────────────────────────────────────────
-
-    private fun makeDraggable(view: View, params: WindowManager.LayoutParams) {
-        var startX = 0f; var startY = 0f
-        var startParamX = 0; var startParamY = 0
-
-        view.setOnTouchListener { _, event ->
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    startX = event.rawX; startY = event.rawY
-                    startParamX = params.x; startParamY = params.y
-                    false // allow clicks to pass through
-                }
-                MotionEvent.ACTION_MOVE -> {
-                    val dx = (event.rawX - startX).toInt()
-                    val dy = (event.rawY - startY).toInt()
-                    if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
-                        params.x = startParamX + dx
-                        params.y = startParamY - dy
-                        windowManager.updateViewLayout(view, params)
-                    }
-                    true
-                }
-                else -> false
-            }
+            val inputManager = getSystemService(Context.INPUT_SERVICE) as android.hardware.input.InputManager
+            inputManager.injectInputEvent(downEvent, 0)
+            inputManager.injectInputEvent(upEvent, 0)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
-    // ──────────────────────────────────────────
-    //  LIFECYCLE
-    // ──────────────────────────────────────────
+    private fun performZoom(zoomIn: Boolean) {
+        Toast.makeText(this, if (zoomIn) "🔍 Zoom In" else "🔍 Zoom Out", Toast.LENGTH_SHORT).show()
+    }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        when (intent?.action) {
-            ACTION_STOP -> stopSelf()
+    private fun startForegroundService() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                "overlay_channel",
+                "CDDA Overlay",
+                NotificationManager.IMPORTANCE_LOW
+            )
+            val manager = getSystemService(NotificationManager::class.java)
+            manager.createNotificationChannel(channel)
+
+            val notification = Notification.Builder(this, "overlay_channel")
+                .setContentTitle("🎮 CDDA Overlay Active")
+                .setContentText("Tap to show/hide controls")
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setAutoCancel(false)
+                .build()
+
+            startForeground(1, notification)
         }
-        return START_STICKY
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        if (::dpadView.isInitialized)   windowManager.removeView(dpadView)
-        if (::actionView.isInitialized) windowManager.removeView(actionView)
-        if (::hotbarView.isInitialized) windowManager.removeView(hotbarView)
-    }
-
-    companion object {
-        const val ACTION_STOP = "com.cddalauncher.STOP_OVERLAY"
+        instance = null
+        if (::overlayView.isInitialized) {
+            windowManager.removeView(overlayView)
+        }
     }
 }
