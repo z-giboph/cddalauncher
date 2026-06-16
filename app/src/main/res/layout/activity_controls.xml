@@ -1,253 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_dark">
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="#0D0F0B"
+    android:padding="16dp">
 
-    <!-- Top bar -->
     <TextView
-        android:id="@+id/tvControlsTitle"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:text="🎮 CONTROLS"
+        android:textColor="#22C55E"
+        android:textSize="28sp"
+        android:textStyle="bold"
         android:fontFamily="monospace"
-        android:gravity="center"
-        android:letterSpacing="0.2"
-        android:text="[ CONTROLS LAYOUT ]"
-        android:textColor="@color/accent_green"
-        android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginBottom="32dp"/>
 
     <Button
-        android:id="@+id/btnBack"
-        android:layout_width="wrap_content"
-        android:layout_height="32dp"
-        android:layout_marginEnd="16dp"
-        android:background="@android:color/transparent"
-        android:fontFamily="monospace"
-        android:text="✕ Back"
-        android:textColor="@color/text_dim"
-        android:textSize="11sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tvControlsTitle"
-        app:layout_constraintBottom_toBottomOf="@id/tvControlsTitle"/>
-
-    <!-- ======================== -->
-    <!--  LEFT SIDE: D-PAD        -->
-    <!-- ======================== -->
-
-    <!-- UP -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnUp"
-        style="@style/Widget.CDDALauncher.Button.Secondary"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:text="▲"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@id/btnLeft"
-        app:layout_constraintEnd_toEndOf="@id/btnDown"
-        app:layout_constraintStart_toStartOf="@id/btnDown" />
-
-    <!-- LEFT -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnLeft"
-        style="@style/Widget.CDDALauncher.Button.Secondary"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginBottom="80dp"
-        android:text="◀"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/btnDown"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <!-- DOWN -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnDown"
-        style="@style/Widget.CDDALauncher.Button.Secondary"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginBottom="80dp"
-        android:text="▼"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/btnRight"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintHorizontal_bias="0.0"/>
-
-    <!-- RIGHT -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnRight"
-        style="@style/Widget.CDDALauncher.Button.Secondary"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:layout_marginBottom="80dp"
-        android:text="▶"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/btnDown"
-        app:layout_constraintEnd_toStartOf="@id/actionCluster"/>
-
-    <!-- ======================== -->
-    <!--  RIGHT SIDE: ACTION PAD  -->
-    <!-- ======================== -->
-
-    <!-- Action cluster container -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/actionCluster"
-        android:layout_width="wrap_content"
+        android:id="@+id/btn_overlay"
+        style="@style/Widget.CDDALauncher.Button.Primary"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="80dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:text="ENABLE OVERLAY"
+        android:textSize="20sp"
+        android:padding="16dp"
+        android:layout_marginBottom="16dp"/>
 
-        <!-- Top row: Confirm + Cancel -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnConfirm"
-            style="@style/Widget.CDDALauncher.Button.Primary"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:text="✓"
-            android:textSize="22sp"
-            app:layout_constraintEnd_toStartOf="@id/btnCancel"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+    <Button
+        android:id="@+id/btn_hide_overlay"
+        style="@style/Widget.CDDALauncher.Button.Secondary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="HIDE/SHOW OVERLAY"
+        android:textSize="20sp"
+        android:padding="16dp"
+        android:layout_marginBottom="16dp"/>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnCancel"
-            style="@style/Widget.CDDALauncher.Button.Secondary"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_marginStart="8dp"
-            android:text="✕"
-            android:textSize="20sp"
-            app:layout_constraintStart_toEndOf="@id/btnConfirm"
-            app:layout_constraintTop_toTopOf="parent"/>
+    <Button
+        android:id="@+id/btn_back"
+        style="@style/Widget.CDDALauncher.Button.Secondary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="BACK"
+        android:textSize="18sp"
+        android:padding="12dp"/>
 
-        <!-- Row 2: Inventory + Pickup -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnInventory"
-            style="@style/Widget.CDDALauncher.Button.Secondary"
-            android:layout_width="60dp"
-            android:layout_height="52dp"
-            android:layout_marginTop="8dp"
-            android:text="BAG"
-            android:textSize="11sp"
-            android:fontFamily="monospace"
-            app:layout_constraintEnd_toStartOf="@id/btnPickup"
-            app:layout_constraintTop_toBottomOf="@id/btnConfirm"
-            app:layout_constraintStart_toStartOf="parent"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnPickup"
-            style="@style/Widget.CDDALauncher.Button.Secondary"
-            android:layout_width="60dp"
-            android:layout_height="52dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginStart="8dp"
-            android:text="GET"
-            android:textSize="11sp"
-            android:fontFamily="monospace"
-            app:layout_constraintStart_toEndOf="@id/btnInventory"
-            app:layout_constraintTop_toBottomOf="@id/btnConfirm"/>
-
-        <!-- Row 3: Drop + Wait -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnDrop"
-            style="@style/Widget.CDDALauncher.Button.Secondary"
-            android:layout_width="60dp"
-            android:layout_height="52dp"
-            android:layout_marginTop="6dp"
-            android:text="DROP"
-            android:textSize="11sp"
-            android:fontFamily="monospace"
-            app:layout_constraintEnd_toStartOf="@id/btnWait"
-            app:layout_constraintTop_toBottomOf="@id/btnInventory"
-            app:layout_constraintStart_toStartOf="parent"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnWait"
-            style="@style/Widget.CDDALauncher.Button.Secondary"
-            android:layout_width="60dp"
-            android:layout_height="52dp"
-            android:layout_marginTop="6dp"
-            android:layout_marginStart="8dp"
-            android:text="WAIT"
-            android:textSize="11sp"
-            android:fontFamily="monospace"
-            app:layout_constraintStart_toEndOf="@id/btnDrop"
-            app:layout_constraintTop_toBottomOf="@id/btnPickup"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!-- ======================== -->
-    <!--  BOTTOM BAR: HOTKEYS     -->
-    <!-- ======================== -->
-
-    <LinearLayout
-        android:id="@+id/bottomHotkeys"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:gravity="center"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <com.google.android.material.button.MaterialButton
-            style="@style/Widget.CDDALauncher.Button.Ghost"
-            android:id="@+id/btnCraft"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_marginEnd="4dp"
-            android:text="CRAFT"
-            android:textSize="10sp"
-            android:fontFamily="monospace"/>
-
-        <com.google.android.material.button.MaterialButton
-            style="@style/Widget.CDDALauncher.Button.Ghost"
-            android:id="@+id/btnMap"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_marginEnd="4dp"
-            android:text="MAP"
-            android:textSize="10sp"
-            android:fontFamily="monospace"/>
-
-        <com.google.android.material.button.MaterialButton
-            style="@style/Widget.CDDALauncher.Button.Ghost"
-            android:id="@+id/btnSmash"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_marginEnd="4dp"
-            android:text="SMASH"
-            android:textSize="10sp"
-            android:fontFamily="monospace"/>
-
-        <com.google.android.material.button.MaterialButton
-            style="@style/Widget.CDDALauncher.Button.Ghost"
-            android:id="@+id/btnFire"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="FIRE"
-            android:textSize="10sp"
-            android:fontFamily="monospace"/>
-
-    </LinearLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
