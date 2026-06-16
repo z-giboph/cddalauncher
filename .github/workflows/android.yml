@@ -5,7 +5,7 @@ on:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
-  workflow_dispatch: # allows manual trigger from GitHub UI
+  workflow_dispatch:
 
 jobs:
   build:
@@ -25,17 +25,14 @@ jobs:
         uses: android-actions/setup-android@v3
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.4'
 
-      - name: Inject Namespace to build.gradle
+      - name: Inject Namespace and Build
         run: |
-          PACKAGE_NAME=$(grep -oP 'package="\K[^"]+' app/src/main/AndroidManifest.xml || echo "com.example.cddalauncher")
-          sed -i "/android {/a \    namespace '$PACKAGE_NAME'" app/build.gradle
-
-      - name: Build Debug APK
-        run: gradle assembleDebug
+          sed -i '/android {/a \    namespace "com.cdda.launcher"' app/build.gradle
+          gradle assembleDebug
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
