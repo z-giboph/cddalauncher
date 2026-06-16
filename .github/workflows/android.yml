@@ -36,7 +36,6 @@ jobs:
         sed -i '/android {/a \    namespace "com.cdda.launcher"' app/build.gradle
         
         # Tatanggalin nito ang anumang ligaw na character pagkatapos ng </resources> sa styles_overlay.xml
-        sed -i '/<\/resources>/q' app/src/main/res/values/styles_overlay.xml
 
     - name: Build Debug APK
       run: gradle assembleDebug
