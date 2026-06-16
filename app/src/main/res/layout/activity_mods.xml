@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="#0D0F0B"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="📦 MODS"
+        android:textColor="#22C55E"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:fontFamily="monospace"
+        android:layout_marginBottom="32dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mods Manager Coming Soon!"
+        android:textColor="#88997A"
+        android:textSize="18sp"
+        android:fontFamily="monospace"
+        android:layout_marginBottom="32dp"/>
+
+    <Button
+        android:id="@+id/btn_back"
+        style="@style/Widget.CDDALauncher.Button.Secondary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="BACK"
+        android:textSize="18sp"
+        android:padding="12dp"/>
+
+</LinearLayout>
