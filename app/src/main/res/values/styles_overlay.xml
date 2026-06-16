@@ -1,5 +1,5 @@
-<!-- ADD THESE TO YOUR EXISTING styles.xml inside <resources> -->
-
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
     <!-- OVERLAY base button: semi-transparent dark, green border -->
     <style name="Widget.CDDALauncher.Overlay.Button" parent="Widget.MaterialComponents.Button.OutlinedButton">
         <item name="android:textColor">@color/text_primary</item>
@@ -37,3 +37,4 @@
         <item name="elevation">0dp</item>
         <item name="android:stateListAnimator">@null</item>
     </style>
+</resources>
