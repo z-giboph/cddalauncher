@@ -1,60 +1,59 @@
 package com.cddalauncher
 
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.view.View
+import android.view.WindowManager
+import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsControllerCompat
-import com.cddalauncher.databinding.ActivityControlsBinding
+import com.cddalauncher.overlay.OverlayPermissionActivity
+import com.cddalauncher.overlay.OverlayService
 
 class ControlsActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityControlsBinding
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityControlsBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_controls)
 
-        setupImmersiveMode()
-        setupControls()
-    }
+        enableFullscreen()
 
-    private fun setupImmersiveMode() {
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        WindowInsetsControllerCompat(window, binding.root).let {
-            it.hide(WindowInsetsCompat.Type.systemBars())
-            it.systemBarsBehavior =
-                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        findViewById<Button>(R.id.btn_overlay).setOnClickListener {
+            val intent = Intent(this, OverlayPermissionActivity::class.java)
+            startActivity(intent)
+        }
+
+        findViewById<Button>(R.id.btn_hide_overlay).setOnClickListener {
+            OverlayService.toggleOverlay()
+            Toast.makeText(this, "Overlay toggled!", Toast.LENGTH_SHORT).show()
+        }
+
+        findViewById<Button>(R.id.btn_back).setOnClickListener {
+            finish()
         }
     }
 
-    private fun setupControls() {
-        // D-pad movement
-        binding.btnUp.setOnClickListener    { sendKey("UP") }
-        binding.btnDown.setOnClickListener  { sendKey("DOWN") }
-        binding.btnLeft.setOnClickListener  { sendKey("LEFT") }
-        binding.btnRight.setOnClickListener { sendKey("RIGHT") }
-
-        // Actions
-        binding.btnConfirm.setOnClickListener  { sendKey("CONFIRM") }
-        binding.btnCancel.setOnClickListener   { sendKey("ESCAPE") }
-        binding.btnInventory.setOnClickListener { sendKey("i") }
-        binding.btnPickup.setOnClickListener   { sendKey(",") }
-        binding.btnDrop.setOnClickListener     { sendKey("d") }
-        binding.btnWait.setOnClickListener     { sendKey(".") }
-        binding.btnCraft.setOnClickListener    { sendKey("&") }
-        binding.btnMap.setOnClickListener      { sendKey("m") }
-        binding.btnSmash.setOnClickListener    { sendKey("s") }
-        binding.btnFire.setOnClickListener     { sendKey("f") }
-
-        // Back to launcher
-        binding.btnBack.setOnClickListener { finish() }
+    private fun enableFullscreen() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.setDecorFitsSystemWindows(false)
+        } else {
+            window.decorView.systemUiVisibility = (
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+            )
+        }
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
-    private fun sendKey(key: String) {
-        // In a full implementation, this sends key events to the CDDA process
-        // via ADB input or an accessibility service bridge
-        android.util.Log.d("CDDAControls", "Key sent: $key")
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus) {
+            enableFullscreen()
+        }
     }
 }
