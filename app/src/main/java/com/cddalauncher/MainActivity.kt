@@ -1,84 +1,142 @@
 package com.cddalauncher
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import android.os.Environment
+import android.view.View
+import android.view.WindowManager
+import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsControllerCompat
-import com.cddalauncher.databinding.ActivityMainBinding
-import java.io.File
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding
+    private lateinit var gameStatusText: TextView
+    private lateinit var launchButton: Button
+    private var cddaPackageName: String = ""
+
+    private val cddaPackages = listOf(
+        "com.cleverraven.cataclysmdda",
+        "com.cleverraven.cataclysmdda.experimental",
+        "cataclysm.dda",
+        "com.cleverraven.cataclysmdda.debug"
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_main)
 
-        setupImmersiveMode()
-        setupButtons()
-        checkCDDAInstallation()
-    }
+        enableFullscreen()
 
-    private fun setupImmersiveMode() {
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        WindowInsetsControllerCompat(window, binding.root).let { controller ->
-            controller.hide(WindowInsetsCompat.Type.systemBars())
-            controller.systemBarsBehavior =
-                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-        }
-    }
+        gameStatusText = findViewById(R.id.game_status_text)
+        launchButton = findViewById(R.id.btn_launch_game)
+        val controlsButton: Button = findViewById(R.id.btn_controls)
+        val settingsButton: Button = findViewById(R.id.btn_settings)
+        val modsButton: Button = findViewById(R.id.btn_mods)
 
-    private fun setupButtons() {
-        binding.btnPlay.setOnClickListener {
-            // Launch via overlay permission flow
-            startActivity(Intent(this, com.cddalauncher.overlay.OverlayPermissionActivity::class.java))
+        detectAndUpdateCDDAStatus()
+
+        launchButton.setOnClickListener {
+            if (cddaPackageName.isNotEmpty()) {
+                launchCDDA()
+            } else {
+                openCDDAReleases()
+            }
         }
-        binding.btnDownload.setOnClickListener { openDownloadPage() }
-        binding.btnSettings.setOnClickListener {
-            startActivity(Intent(this, SettingsActivity::class.java))
-        }
-        binding.btnControls.setOnClickListener {
+
+        controlsButton.setOnClickListener {
             startActivity(Intent(this, ControlsActivity::class.java))
         }
-        binding.btnMods.setOnClickListener {
+
+        settingsButton.setOnClickListener {
+            startActivity(Intent(this, SettingsActivity::class.java))
+        }
+
+        modsButton.setOnClickListener {
             startActivity(Intent(this, ModsActivity::class.java))
         }
     }
 
-    private fun checkCDDAInstallation() {
-        val cddaDir = getCDDADirectory()
-        if (cddaDir.exists() && cddaDir.listFiles()?.isNotEmpty() == true) {
-            binding.btnPlay.isEnabled = true
-            binding.tvStatus.text = "✓ CDDA Installed — Ready to Survive"
+    private fun enableFullscreen() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.setDecorFitsSystemWindows(false)
         } else {
-            binding.btnPlay.isEnabled = false
-            binding.tvStatus.text = "⚠ CDDA not found. Download the game files first."
+            window.decorView.systemUiVisibility = (
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+            )
         }
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus) {
+            enableFullscreen()
+        }
+    }
+
+    private fun detectAndUpdateCDDAStatus() {
+        cddaPackageName = findCDDAPackage()
+        
+        if (cddaPackageName.isNotEmpty()) {
+            gameStatusText.text = "✅ CDDA is installed"
+            gameStatusText.setTextColor(getColor(R.color.accent_green))
+            launchButton.text = "LAUNCH CDDA"
+        } else {
+            gameStatusText.text = "⚠️ CDDA is not installed"
+            gameStatusText.setTextColor(getColor(R.color.accent_red))
+            launchButton.text = "DOWNLOAD CDDA"
+        }
+    }
+
+    private fun findCDDAPackage(): String {
+        for (pkg in cddaPackages) {
+            try {
+                packageManager.getPackageInfo(pkg, 0)
+                return pkg
+            } catch (e: PackageManager.NameNotFoundException) {
+                // Continue
+            }
+        }
+        return ""
     }
 
     private fun launchCDDA() {
-        val cddaApk = File(getCDDADirectory(), "com.cleverraven.cataclysmdda")
-        val launchIntent = packageManager.getLaunchIntentForPackage("com.cleverraven.cataclysmdda")
-        if (launchIntent != null) {
-            startActivity(launchIntent)
-        } else {
-            Toast.makeText(this, "CDDA app not found. Please install via ZombDroid or official APK.", Toast.LENGTH_LONG).show()
+        try {
+            val launchIntent = packageManager.getLaunchIntentForPackage(cddaPackageName)
+            if (launchIntent != null) {
+                startActivity(launchIntent)
+            } else {
+                Toast.makeText(this, "Error: Cannot launch CDDA", Toast.LENGTH_LONG).show()
+                val intent = Intent(Intent.ACTION_MAIN)
+                intent.addCategory(Intent.CATEGORY_LAUNCHER)
+                intent.setPackage(cddaPackageName)
+                startActivity(intent)
+            }
+        } catch (e: Exception) {
+            Toast.makeText(this, "Error launching CDDA: ${e.message}", Toast.LENGTH_LONG).show()
+            openCDDAReleases()
         }
     }
 
-    private fun openDownloadPage() {
-        val url = "https://github.com/CleverRaven/Cataclysm-DDA/releases"
-        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+    private fun openCDDAReleases() {
+        val browserIntent = Intent(
+            Intent.ACTION_VIEW,
+            Uri.parse("https://github.com/CleverRaven/Cataclysm-DDA/releases")
+        )
+        startActivity(browserIntent)
     }
 
-    private fun getCDDADirectory(): File {
-        return File(Environment.getExternalStorageDirectory(), "cdda")
+    override fun onResume() {
+        super.onResume()
+        detectAndUpdateCDDAStatus()
     }
 }
