@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="4dp"
+    android:background="@drawable/overlay_panel_bg">
+
+    <!-- UP -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/overlayBtnUp"
+        style="@style/Widget.CDDALauncher.Overlay.Button"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:text="▲"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="@id/overlayBtnDown"
+        app:layout_constraintStart_toStartOf="@id/overlayBtnDown"
+        app:layout_constraintBottom_toTopOf="@id/overlayBtnLeft" />
+
+    <!-- LEFT -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/overlayBtnLeft"
+        style="@style/Widget.CDDALauncher.Overlay.Button"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:text="◀"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@id/overlayBtnDown"
+        app:layout_constraintBottom_toTopOf="@id/overlayDpadSpacer"
+        app:layout_constraintTop_toTopOf="@id/overlayBtnDown" />
+
+    <!-- CENTER (wait) -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/overlayBtnDown"
+        style="@style/Widget.CDDALauncher.Overlay.Button"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:text="·"
+        android:textSize="22sp"
+        app:layout_constraintStart_toEndOf="@id/overlayBtnLeft"
+        app:layout_constraintEnd_toStartOf="@id/overlayBtnRight"
+        app:layout_constraintBottom_toTopOf="@id/overlayDpadSpacer"
+        app:layout_constraintTop_toBottomOf="@id/overlayBtnUp"
+        app:layout_constraintHorizontal_chainStyle="packed"/>
+
+    <!-- RIGHT -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/overlayBtnRight"
+        style="@style/Widget.CDDALauncher.Overlay.Button"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:text="▶"
+        android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@id/overlayBtnDown"
+        app:layout_constraintBottom_toTopOf="@id/overlayDpadSpacer"
+        app:layout_constraintTop_toTopOf="@id/overlayBtnDown" />
+
+    <!-- DOWN (below center) -->
+    <View
+        android:id="@+id/overlayDpadSpacer"
+        android:layout_width="52dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@id/overlayBtnDown"
+        app:layout_constraintEnd_toEndOf="@id/overlayBtnDown"/>
+
+    <!-- Real DOWN button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/overlayBtnDownDir"
+        style="@style/Widget.CDDALauncher.Overlay.Button"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:text="▼"
+        android:textSize="18sp"
+        app:layout_constraintTop_toBottomOf="@id/overlayBtnDown"
+        app:layout_constraintStart_toStartOf="@id/overlayBtnDown"
+        app:layout_constraintEnd_toEndOf="@id/overlayBtnDown"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="4dp"
+    android:gravity="center_vertical"
+    android:background="@drawable/overlay_panel_bg">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/overlayBtnCraft"
+        style="@style/Widget.CDDALauncher.Overlay.Button.Ghost"
+        android:layout_width="56dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="4dp"
+        android:text="CRAFT"
+        android:textSize="9sp"
+        android:fontFamily="monospace"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/overlayBtnMap"
+        style="@style/Widget.CDDALauncher.Overlay.Button.Ghost"
+        android:layout_width="56dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="4dp"
+        android:text="MAP"
+        android:textSize="9sp"
+        android:fontFamily="monospace"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/overlayBtnSmash"
+        style="@style/Widget.CDDALauncher.Overlay.Button.Ghost"
+        android:layout_width="56dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="4dp"
+        android:text="SMASH"
+        android:textSize="9sp"
+        android:fontFamily="monospace"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/overlayBtnFire"
+        style="@style/Widget.CDDALauncher.Overlay.Button.Ghost"
+        android:layout_width="56dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="8dp"
+        android:text="FIRE"
+        android:textSize="9sp"
+        android:fontFamily="monospace"/>
+
+    <!-- Divider -->
+    <View
+        android:layout_width="1dp"
+        android:layout_height="28dp"
+        android:background="#2D7A4A"
+        android:layout_marginEnd="8dp"/>
+
+    <!-- Close overlay button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/overlayBtnClose"
+        style="@style/Widget.CDDALauncher.Overlay.Button.Ghost"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:text="✕"
+        android:textSize="14sp"
+        android:textColor="#EF4444"/>
+
+</LinearLayout>

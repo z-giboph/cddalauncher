@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Backgrounds -->
+    <color name="bg_dark">#0D0F0B</color>
+    <color name="bg_card">#161A13</color>
+    <color name="bg_surface">#1C211A</color>
+
+    <!-- Accent: terminal green -->
+    <color name="accent_green">#4ADE80</color>
+    <color name="accent_green_dim">#2D7A4A</color>
+    <color name="accent_green_pressed">#22C55E</color>
+
+    <!-- Text -->
+    <color name="text_primary">#E8EDE6</color>
+    <color name="text_secondary">#8A9E85</color>
+    <color name="text_dim">#4E6048</color>
+
+    <!-- Warning / status -->
+    <color name="color_warning">#F59E0B</color>
+    <color name="color_error">#EF4444</color>
+    <color name="color_ok">#4ADE80</color>
+
+    <!-- Material theme required -->
+    <color name="colorPrimary">#4ADE80</color>
+    <color name="colorPrimaryVariant">#22C55E</color>
+    <color name="colorOnPrimary">#0D0F0B</color>
+    <color name="colorSecondary">#2D7A4A</color>
+    <color name="colorOnSecondary">#E8EDE6</color>
+    <color name="colorSurface">#1C211A</color>
+    <color name="colorOnSurface">#E8EDE6</color>
+    <color name="colorBackground">#0D0F0B</color>
+    <color name="colorOnBackground">#E8EDE6</color>
+    <color name="colorError">#EF4444</color>
+    <color name="colorOnError">#0D0F0B</color>
+</resources>
