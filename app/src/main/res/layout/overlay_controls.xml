@@ -1,1 +1,297 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#CC0D0F0B"
+    android:padding="8dp"
+    android:gravity="center"
+    android:elevation="10dp">
 
+    <!-- TOP ROW: Zoom + Escape + Hide -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/overlay_btn_zoom_in"
+            android:layout_width="44dp"
+            android:layout_height="36dp"
+            android:text="➕"
+            android:textSize="14sp"
+            android:backgroundTint="#CC22C55E"
+            android:layout_marginEnd="2dp"/>
+
+        <Button
+            android:id="@+id/overlay_btn_zoom_out"
+            android:layout_width="44dp"
+            android:layout_height="36dp"
+            android:text="➖"
+            android:textSize="14sp"
+            android:backgroundTint="#CC22C55E"
+            android:layout_marginEnd="4dp"/>
+
+        <Button
+            android:id="@+id/overlay_btn_escape"
+            android:layout_width="44dp"
+            android:layout_height="36dp"
+            android:text="⎋"
+            android:textSize="14sp"
+            android:backgroundTint="#CCEF4444"
+            android:layout_marginEnd="4dp"/>
+
+        <Button
+            android:id="@+id/overlay_btn_hide"
+            android:layout_width="44dp"
+            android:layout_height="36dp"
+            android:text="✕"
+            android:textSize="14sp"
+            android:backgroundTint="#CCEF4444"/>
+    </LinearLayout>
+
+    <!-- MIDDLE ROW: D-PAD + ACTION BUTTONS -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <!-- D-PAD -->
+        <GridLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:rowCount="3"
+            android:columnCount="3"
+            android:layout_marginEnd="8dp">
+
+            <View
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_column="1" />
+            <Button
+                android:id="@+id/overlay_btn_up"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:text="▲"
+                android:textSize="18sp"
+                android:backgroundTint="#CC4ADE80"
+                android:layout_column="1" />
+
+            <Button
+                android:id="@+id/overlay_btn_left"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:text="◀"
+                android:textSize="18sp"
+                android:backgroundTint="#CC4ADE80"
+                android:layout_column="0" />
+            <View
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_column="1" />
+            <Button
+                android:id="@+id/overlay_btn_right"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:text="▶"
+                android:textSize="18sp"
+                android:backgroundTint="#CC4ADE80"
+                android:layout_column="2" />
+
+            <View
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_column="1" />
+            <Button
+                android:id="@+id/overlay_btn_down"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:text="▼"
+                android:textSize="18sp"
+                android:backgroundTint="#CC4ADE80"
+                android:layout_column="1" />
+        </GridLayout>
+
+        <!-- ACTION BUTTONS: Enter, Space, Comma, Period -->
+        <GridLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:rowCount="2"
+            android:columnCount="2"
+            android:layout_marginEnd="8dp">
+
+            <Button
+                android:id="@+id/overlay_btn_enter"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:text="↵"
+                android:textSize="16sp"
+                android:backgroundTint="#CC22C55E"
+                android:layout_column="0"
+                android:layout_row="0"
+                android:layout_margin="1dp"/>
+
+            <Button
+                android:id="@+id/overlay_btn_space"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:text="␣"
+                android:textSize="16sp"
+                android:backgroundTint="#CCEAB308"
+                android:layout_column="1"
+                android:layout_row="0"
+                android:layout_margin="1dp"/>
+
+            <Button
+                android:id="@+id/overlay_btn_comma"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:text=","
+                android:textSize="18sp"
+                android:backgroundTint="#CC3B82F6"
+                android:layout_column="0"
+                android:layout_row="1"
+                android:layout_margin="1dp"/>
+
+            <Button
+                android:id="@+id/overlay_btn_period"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:text="."
+                android:textSize="18sp"
+                android:backgroundTint="#CC3B82F6"
+                android:layout_column="1"
+                android:layout_row="1"
+                android:layout_margin="1dp"/>
+        </GridLayout>
+
+        <!-- HOTBAR BUTTONS: i, m, s, f, c, e, g, d, a, w -->
+        <GridLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:rowCount="2"
+            android:columnCount="5">
+
+            <Button
+                android:id="@+id/overlay_btn_i"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:text="i"
+                android:textSize="12sp"
+                android:backgroundTint="#CC4ADE80"
+                android:layout_column="0"
+                android:layout_row="0"
+                android:layout_margin="1dp"/>
+
+            <Button
+                android:id="@+id/overlay_btn_m"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:text="m"
+                android:textSize="12sp"
+                android:backgroundTint="#CC4ADE80"
+                android:layout_column="1"
+                android:layout_row="0"
+                android:layout_margin="1dp"/>
+
+            <Button
+                android:id="@+id/overlay_btn_s"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:text="s"
+                android:textSize="12sp"
+                android:backgroundTint="#CCEF4444"
+                android:layout_column="2"
+                android:layout_row="0"
+                android:layout_margin="1dp"/>
+
+            <Button
+                android:id="@+id/overlay_btn_f"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:text="f"
+                android:textSize="12sp"
+                android:backgroundTint="#CCEAB308"
+                android:layout_column="3"
+                android:layout_row="0"
+                android:layout_margin="1dp"/>
+
+            <Button
+                android:id="@+id/overlay_btn_c"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:text="c"
+                android:textSize="12sp"
+                android:backgroundTint="#CC3B82F6"
+                android:layout_column="4"
+                android:layout_row="0"
+                android:layout_margin="1dp"/>
+
+            <Button
+                android:id="@+id/overlay_btn_e"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:text="e"
+                android:textSize="12sp"
+                android:backgroundTint="#CC4ADE80"
+                android:layout_column="0"
+                android:layout_row="1"
+                android:layout_margin="1dp"/>
+
+            <Button
+                android:id="@+id/overlay_btn_g"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:text="g"
+                android:textSize="12sp"
+                android:backgroundTint="#CCEAB308"
+                android:layout_column="1"
+                android:layout_row="1"
+                android:layout_margin="1dp"/>
+
+            <Button
+                android:id="@+id/overlay_btn_d"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:text="d"
+                android:textSize="12sp"
+                android:backgroundTint="#CCEF4444"
+                android:layout_column="2"
+                android:layout_row="1"
+                android:layout_margin="1dp"/>
+
+            <Button
+                android:id="@+id/overlay_btn_a"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:text="a"
+                android:textSize="12sp"
+                android:backgroundTint="#CC3B82F6"
+                android:layout_column="3"
+                android:layout_row="1"
+                android:layout_margin="1dp"/>
+
+            <Button
+                android:id="@+id/overlay_btn_w"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:text="w"
+                android:textSize="12sp"
+                android:backgroundTint="#CC22C55E"
+                android:layout_column="4"
+                android:layout_row="1"
+                android:layout_margin="1dp"/>
+        </GridLayout>
+    </LinearLayout>
+
+    <!-- DRAG HANDLE -->
+    <View
+        android:layout_width="40dp"
+        android:layout_height="3dp"
+        android:background="#88997A"
+        android:layout_marginTop="4dp"
+        android:alpha="0.5"/>
+</LinearLayout>
