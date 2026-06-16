@@ -148,21 +148,15 @@ class OverlayService : Service() {
 
     private fun sendKeyEvent(keyCode: Int) {
         try {
-            val downTime = System.currentTimeMillis()
-            val downEvent = android.view.KeyEvent(
-                downTime, downTime,
-                android.view.KeyEvent.ACTION_DOWN,
-                keyCode, 0
-            )
-            val upEvent = android.view.KeyEvent(
-                downTime, downTime,
-                android.view.KeyEvent.ACTION_UP,
-                keyCode, 0
-            )
-
-            val inputManager = getSystemService(Context.INPUT_SERVICE) as android.hardware.input.InputManager
-            inputManager.injectInputEvent(downEvent, 0)
-            inputManager.injectInputEvent(upEvent, 0)
+            // Gamitin ang Instrumentation para magpadala ng key events
+            val instrumentation = android.app.Instrumentation()
+            Thread {
+                try {
+                    instrumentation.sendKeyDownUpSync(keyCode)
+                } catch (e: Exception) {
+                    android.util.Log.w("OverlayService", "Failed to send key event: ${e.message}")
+                }
+            }.start()
         } catch (e: Exception) {
             e.printStackTrace()
         }
